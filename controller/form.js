@@ -275,9 +275,10 @@ const driverSignup = async (req, res) => {
 
 const verifyGoogleToken = async (req, res) => {
   const { code } = req.body;
-
+  console.log(code);
   try {
     const { tokens } = await client.getToken(code);
+    console.log(tokens);
     const ticket = await client.verifyIdToken({
       idToken: tokens.id_token,
       audience: CLIENT_ID,
