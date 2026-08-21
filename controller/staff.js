@@ -1,0 +1,195 @@
+const staffModel = require("../model/staff-model.js");
+const bcrypt = require("bcryptjs");
+const cloudinary = require("../utils/claudinary.js");
+const generateOTP = require("otp-generator");
+const {
+  sendAdminEmail,
+  sendForgotPasswordEmail,
+} = require("../utils/send-to-email.js");
+
+const broadCastStaff = async (io, room, payload) => {
+  io.to("super").emit(room, payload);
+};
+const generate = async () => {
+  const code = generateOTP.generate(6, {
+    digits: true,
+    lowerCaseAlphabets: false,
+    upperCaseAlphabets: false,
+    specialChars: false,
+  });
+  return code;
+};
+
+const createAdmin = async (req, res) => {
+  const { email, number, password, userName, role, adminCode } = req.body;
+
+  const isInvalidString = (val) => typeof val !== "string" || !val.trim();
+
+  if (
+    isInvalidString(email) ||
+    isInvalidString(number) ||
+    isInvalidString(password) ||
+    isInvalidString(userName) ||
+    isInvalidString(role) ||
+    isInvalidString(adminCode)
+  ) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  if (adminCode !== process.env.adminCode) {
+    return res.status(403).json({ message: "Invalid admin code" });
+  }
+
+  try {
+    const existingAdmin = await staffModel.findOne({
+      email,
+    });
+    if (existingAdmin) {
+      return res.status(400).json({ message: "This admin already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const user = await staffModel.create({
+      email,
+      password: hashedPassword,
+      userName,
+      number,
+      profileImage: role.toLowerCase() == admin ? "" : "",
+      role,
+    });
+
+    const code = await generate();
+    const updatedUser = await staffModel.findOneAndUpdate(
+      { email: user.email },
+      { $set: { otp: code, otpExpiry: Date.now() + 10 * 60 * 1000 } },
+      { new: true },
+    );
+    const send = await sendAdminEmail(
+      user.email,
+      code,
+      user.userName,
+      user.role == "superadmin" ? "Super Admin" : "Admin",
+    );
+    if (!send) {
+      return res.status(400).json({ message: "Failed to send OTP email" });
+    }
+
+    await broadCastStaff(req.app.get("io"), "staff:created", updatedUser);
+
+    return res
+      .status(200)
+      .json({ message: "OTP sent to your email for verification" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message });
+  }
+};
+
+const denyUser = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ message: "User ID is required" });
+  }
+
+  try {
+    const user = await staffModel.findByIdAndDelete(id);
+
+    await broadCastStaff(req.app.get("io"), "staff:denied", user);
+    return res.status(200).json({ message: "User denied successful " });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
+const approveUser = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ message: "User ID is required" });
+  }
+
+  try {
+    const user = await staffModel.findByIdAndUpdate(
+      id,
+      { $set: { isApproved: true } },
+      { new: true },
+    );
+
+    await broadCastStaff(req.app.get("io"), "staff:approved", user);
+    return res.status(200).json({ message: "User approved successful " });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
+const getAllStaff = async (req, res) => {
+  try {
+    const staff = await staffModel.find();
+    return res
+      .status(200)
+      .json({ message: "Staff fetched successfully", data: staff });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
+const staffLogin = async (req, res) => {
+  try {
+    const { email, password, adminCode } = req.body;
+    if (!email.trim() || !password.trim() || !adminCode) {
+      return res.status(400).json({ message: "All Fields Are Required" });
+    }
+    if (adminCode !== process.env.adminCode) {
+      return res.status(403).json({ message: "Invalid admin code" });
+    }
+    const find = await staffModel.findOne({ email });
+    if (!find) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const isMatch = await bcrypt.compare(password, find.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid password" });
+    }
+    const token = await jwt.sign(
+      { email: user.email, id: user.id },
+      process.env.jwtSecretKey,
+      {
+        expiresIn: 60 * 60,
+      },
+    );
+    const verified = await staffModel.findOneAndUpdate(
+      { email: find.email },
+      { $set: { token } },
+      { new: true },
+    );
+
+    if (!verified) {
+      return res.status(400).json({ message: "Failed to generate token" });
+    }
+
+    return res.status(200).json({
+      message: "Login Successful",
+      data: { role: user.role, token },
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
+module.exports = {
+  createAdmin,
+  denyUser,
+  approveUser,
+  getAllStaff,
+  staffLogin,
+};

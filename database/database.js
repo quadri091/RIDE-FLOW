@@ -1,15 +1,18 @@
 const mongoose = require("mongoose");
 
 const connect = async () => {
+  if (!process.env.LINK) {
+    console.warn("Missing MongoDB connection string in process.env.LINK");
+    return;
+  }
+
   try {
-    const connection = await mongoose.connect(process.env.LINK);
-    if (connection) {
-      console.log("Database connected successfully");
-    } else {
-      console.log("Connection failed");
-    }
+    await mongoose.connect(process.env.LINK, {
+      serverSelectionTimeoutMS: 5000,
+    });
+    console.log("Database connected successfully");
   } catch (error) {
-    console.log(error);
+    console.error("Database connection failed:", error.message);
   }
 };
 

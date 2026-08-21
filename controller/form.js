@@ -1,6 +1,9 @@
 const usermodel = require("../model/form-model.js");
+const bannedModel = require("../model/banned.js");
+const suspendedModel = require("../model/suspended.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const cloudinary = require("../utils/claudinary.js");
 const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client(
   process.env.googleClientId,
@@ -35,6 +38,12 @@ const login = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    if (!user.verified) {
+      return res
+        .status(400)
+        .json({ message: "Please verify your email first", status: "code" });
+    }
+
     if (!user.password) {
       return res.status(400).json({
         message: "Please Sign In with Google.",
@@ -47,7 +56,7 @@ const login = async (req, res) => {
     }
 
     const token = await jwt.sign(
-      { email: user.email },
+      { email: user.email, id: user.id },
       process.env.jwtSecretKey,
       {
         expiresIn: 60 * 60,
@@ -56,18 +65,17 @@ const login = async (req, res) => {
 
     const verified = await usermodel.findOneAndUpdate(
       { email: user.email },
-      { token },
+      { $set: { token } },
       { new: true },
     );
 
     if (!verified) {
       return res.status(400).json({ message: "Failed to generate token" });
     }
-    console.log(verified);
 
     return res.status(200).json({
       message: "Login Successful",
-      data: { email: user.email, token },
+      data: { role: user.role, token },
     });
   } catch (error) {
     console.log(error);
@@ -76,7 +84,9 @@ const login = async (req, res) => {
 };
 
 const signup = async (req, res) => {
-  const { email, password, userName, number, profileImage } = req.body;
+  console.log(req.body);
+
+  const { email, password, userName, number } = req.body;
   if (!email || !password || !userName || !number) {
     return res.status(400).json({ message: "All fields are required" });
   }
@@ -86,19 +96,27 @@ const signup = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
+    const bannedUser = await bannedModel.findOne({ "user.email": email });
+    if (bannedUser) {
+      return res.status(400).json({ message: "User is banned already" });
+    }
+    const suspendedUser = await suspendedModel.findOne({ "user.email": email });
+    if (suspendedUser) {
+      return res.status(400).json({ message: "User is suspended already" });
+    }
     const hashedPassword = await bcrypt.hash(password, 12);
+
     const user = await usermodel.create({
       email,
       password: hashedPassword,
       userName,
       number,
-      profileImage,
     });
 
     const code = await generate();
     const updatedUser = await usermodel.findOneAndUpdate(
       { email: user.email },
-      { otp: code, otpExpiry: Date.now() + 10 * 60 * 1000 },
+      { $set: { otp: code, otpExpiry: Date.now() + 10 * 60 * 1000 } },
       { new: true },
     );
 
@@ -106,18 +124,21 @@ const signup = async (req, res) => {
     if (!send) {
       return res.status(400).json({ message: "Failed to send OTP email" });
     }
+    const io = req.app.get("io");
+    io.to("admins").emit("new:signup", updatedUser);
 
     return res
       .status(200)
       .json({ message: "OTP sent to your email for verification" });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "Server error" });
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message });
   }
 };
 
-const forgetPassword = async (req, res) => {
-  const { email } = req.body;
+const getCode = async (req, res) => {
+  const { email, forgot } = req.body;
   if (!email) {
     return res.status(400).json({ message: "Email is required" });
   }
@@ -135,11 +156,13 @@ const forgetPassword = async (req, res) => {
     const code = await generate();
     const updatedUser = await usermodel.findOneAndUpdate(
       { email: user.email },
-      { otp: code, otpExpiry: Date.now() + 10 * 60 * 1000 },
+      { $set: { otp: code, otpExpiry: Date.now() + 10 * 60 * 1000 } },
       { new: true },
     );
 
-    const send = await sendForgotPasswordEmail(user.email, code, user.userName);
+    const send = forgot
+      ? await sendForgotPasswordEmail(user.email, code, user.userName)
+      : await sendEmail(user.email, code, user.userName);
     if (!send) {
       return res.status(400).json({ message: "Failed to send OTP email" });
     }
@@ -159,10 +182,14 @@ const verifyToken = async (req, res) => {
     const token = req.headers.authorization.split(" ")[1];
     if (!token) return res.status(400).json({ message: "Token is required" });
     const jwtVerify = await jwt.verify(token, process.env.jwtSecretKey);
-    if (!jwtVerify) return res.status(400).json({ message: "Invalid Token" });
+    if (!jwtVerify)
+      return res
+        .status(400)
+        .json({ status: "invalid", message: "Invalid Token" });
 
-    const find = await usermodel.findOne({ email: jwtVerify.email });
-    console.log(find);
+    const find = await usermodel
+      .findOne({ email: jwtVerify.email })
+      .select("-password");
     res.status(200).json({ message: "Token is valid", data: find });
   } catch (error) {
     console.log(error);
@@ -179,8 +206,11 @@ const verifyOTP = async (req, res) => {
   try {
     const user = await usermodel.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res
+        .status(404)
+        .json({ status: "not-found", message: "User not found" });
     }
+
     if (user.otpExpiry < Date.now()) {
       user.otp = null;
       user.otpExpiry = null;
@@ -189,7 +219,7 @@ const verifyOTP = async (req, res) => {
       return res.status(400).json({ message: "OTP has expired" });
     }
 
-    if (user.otp != +otp) {
+    if (String(user.otp).trim() !== String(otp).trim()) {
       return res.status(400).json({ message: "Invalid OTP" });
     }
 
@@ -197,8 +227,8 @@ const verifyOTP = async (req, res) => {
     user.otp = null;
     user.otpExpiry = null;
     await user.save();
-
-    console.log(user);
+    const io = req.app.get("io");
+    io.to("admins").emit("new:updated", user);
 
     return res.status(200).json({ message: "Email verified successfully" });
   } catch (error) {
@@ -206,19 +236,47 @@ const verifyOTP = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
-
+const updateNumber = async (req, res) => {
+  const { email, number } = req.body;
+  if (!email || !number) {
+    return res.status(400).json({ message: "Email and number are required" });
+  }
+  try {
+    const user = await usermodel.findOneAndUpdate(
+      { email },
+      { $set: { number } },
+      { new: true },
+    );
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const io = req.app.get("io");
+    io.to("admins").emit("new:updated", user);
+    return res.status(200).json({
+      status: "success",
+      message: "Number updated successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message });
+  }
+};
 const driverSignup = async (req, res) => {
+  console.log(req.body);
   const {
+    userName,
     email,
     password,
-    userName,
     number,
-    profileImage,
     plateNumber,
     carBrand,
     carModel,
     carYear,
     carImage,
+    age,
+    drivingLicense,
   } = req.body;
   if (
     !email ||
@@ -229,7 +287,9 @@ const driverSignup = async (req, res) => {
     !carBrand ||
     !carModel ||
     !carYear ||
-    !carImage
+    !carImage ||
+    !age ||
+    !drivingLicense
   ) {
     return res.status(400).json({ message: "All fields are required" });
   }
@@ -238,15 +298,32 @@ const driverSignup = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
+    const bannedUser = await bannedModel.findOne({ "user.email": email });
+    if (bannedUser) {
+      return res.status(400).json({ message: "User is banned already" });
+    }
+    const suspendedUser = await suspendedModel.findOne({ "user.email": email });
+    if (suspendedUser) {
+      return res.status(400).json({ message: "User is suspended already" });
+    }
+    const ageNum = parseInt(age, 10);
+    if (isNaN(ageNum) || ageNum < 18) {
+      return res
+        .status(400)
+        .json({ message: "Driver must be at least 18 years old" });
+    }
     const hashedPassword = await bcrypt.hash(password, 12);
+
     const user = await usermodel.create({
       email,
       password: hashedPassword,
       userName,
       number,
-      profileImage,
       plateNumber,
       carBrand,
+      age: ageNum,
+      drivingLicense,
+      role: "driver",
       carYear,
       carModel,
       carImage,
@@ -255,7 +332,7 @@ const driverSignup = async (req, res) => {
     const code = await generate();
     const updatedUser = await usermodel.findOneAndUpdate(
       { email: user.email },
-      { otp: code, otpExpiry: Date.now() + 10 * 60 * 1000 },
+      { $set: { otp: code, otpExpiry: Date.now() + 10 * 60 * 1000 } },
       { new: true },
     );
 
@@ -263,6 +340,8 @@ const driverSignup = async (req, res) => {
     if (!send) {
       return res.status(400).json({ message: "Failed to send OTP email" });
     }
+    const io = req.app.get("io");
+    io.to("admins").emit("new:signup", updatedUser);
 
     return res
       .status(200)
@@ -273,12 +352,35 @@ const driverSignup = async (req, res) => {
   }
 };
 
+const uploadCarImage = async (req, res) => {
+  const { plate, license } = req.body;
+  if (!plate || !license) {
+    return res
+      .status(400)
+      .json({ message: "Plate and license images are required" });
+  }
+  try {
+    const plateRequest = await cloudinary.uploader.upload(plate);
+    const licenseRequest = await cloudinary.uploader.upload(license);
+    return res.status(200).json({
+      message: "Images uploaded successfully",
+      data: {
+        plate: plateRequest.secure_url,
+        license: licenseRequest.secure_url,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message });
+  }
+};
+
 const verifyGoogleToken = async (req, res) => {
   const { code } = req.body;
-  console.log(code);
   try {
     const { tokens } = await client.getToken(code);
-    console.log(tokens);
     const ticket = await client.verifyIdToken({
       idToken: tokens.id_token,
       audience: CLIENT_ID,
@@ -290,28 +392,52 @@ const verifyGoogleToken = async (req, res) => {
     let user = await usermodel.findOne({ email });
 
     // If user doesn't exist, create them
-    if (!user) {
-      user = await usermodel.create({
-        email,
-        userName: name,
-        profileImage,
-        googleSub: userId,
-      });
+    // 1. Check if user exists with manual account
+    if (user && user.googleSub == null) {
+      return res.status(400).json({ message: "Sign in manually" });
+    }
 
-      if (!user) {
+    const bannedUser = await bannedModel.findOne({ "user.email": email });
+    if (bannedUser) {
+      return res.status(400).json({ message: "User is banned already" });
+    }
+    const suspendedUser = await suspendedModel.findOne({ "user.email": email });
+    if (suspendedUser) {
+      return res.status(400).json({ message: "User is suspended already" });
+    }
+
+    // 2. Create if doesn't exist
+    if (!user) {
+      try {
+        user = await usermodel.create({
+          email,
+          userName: name,
+          profileImage,
+          googleSub: userId,
+          verified: true,
+        });
+        const io = req.app.get("io");
+        io.to("admins").emit("new:signup", user);
+      } catch (error) {
         return res.status(400).json({ message: "Failed to create user" });
       }
     }
 
-    const token = jwt.sign({ email }, process.env.jwtSecretKey, {
+    // 3. At this point user exists (either found or just created)
+    const token = jwt.sign({ email, id: user.id }, process.env.jwtSecretKey, {
       expiresIn: 60 * 60,
     });
 
-    await usermodel.findOneAndUpdate({ email }, { token });
-
+    const updatedUser = await usermodel.findOneAndUpdate(
+      { email },
+      { $set: { token } },
+      { new: true },
+    );
+    const io = req.app.get("io");
+    io.to("admins").emit("new:signup", updatedUser);
     return res.status(200).json({
       message: "Login Successful",
-      data: { email: user.email, token },
+      data: { role: user.role, token },
     });
   } catch (error) {
     console.log(error);
@@ -323,8 +449,10 @@ module.exports = {
   signup,
   login,
   driverSignup,
-  forgetPassword,
+  getCode,
   verifyOTP,
+  uploadCarImage,
   verifyToken,
+  updateNumber,
   verifyGoogleToken,
 };

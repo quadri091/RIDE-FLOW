@@ -1,23 +1,25 @@
 const express = require("express");
-const router = express.Router();
+const formRouter = express.Router();
 const {
   signup,
   login,
   driverSignup,
   verifyOTP,
   verifyToken,
+  uploadCarImage,
+  updateNumber,
   verifyGoogleToken,
-  forgetPassword,
+  getCode,
 } = require("../controller/form.js");
-const usermodel = require("../model/form-model.js");
-const { model } = require("mongoose");
 
-router.post("/signup", signup);
-router.post("/forget-password", forgetPassword);
-router.post("/verify-otp", verifyOTP);
-router.post("/verify-token", verifyToken);
-router.post("/login", login);
-router.post("/driver-signup", driverSignup);
-router.post("/auth/google", verifyGoogleToken);
+formRouter.post("/signup", signup);
+formRouter.get("/send-verify-email", getCode);
+formRouter.post("/verify-otp", verifyOTP);
+formRouter.post("/verify-token", verifyToken);
+formRouter.post("/login", login);
+formRouter.post("/upload", uploadCarImage);
+formRouter.post("/driver-signup", driverSignup);
+formRouter.post("/update-number", updateNumber);
+formRouter.post("/auth/google", verifyGoogleToken);
 
-module.exports = router;
+module.exports = formRouter;
