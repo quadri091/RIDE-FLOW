@@ -2,10 +2,8 @@ const staffModel = require("../model/staff-model.js");
 const bcrypt = require("bcryptjs");
 const cloudinary = require("../utils/claudinary.js");
 const generateOTP = require("otp-generator");
-const {
-  sendAdminEmail,
-  sendForgotPasswordEmail,
-} = require("../utils/send-to-email.js");
+const jwt = require("jsonwebtoken");
+const { sendAdminEmail } = require("../utils/send-to-email.js");
 
 const broadCastStaff = async (io, room, payload) => {
   io.to("super").emit(room, payload);
@@ -54,7 +52,7 @@ const createAdmin = async (req, res) => {
       password: hashedPassword,
       userName,
       number,
-      profileImage: role.toLowerCase() == admin ? "" : "",
+      profileImage: role.toLowerCase() == "admin" ? "" : "",
       role,
     });
 
@@ -158,8 +156,12 @@ const staffLogin = async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid password" });
     }
+
+    if (!find.isApproved) {
+      return res.status(403).json({ message: "Not approved yet" });
+    }
     const token = await jwt.sign(
-      { email: user.email, id: user.id },
+      { email: find.email, id: find.id },
       process.env.jwtSecretKey,
       {
         expiresIn: 60 * 60,
@@ -177,12 +179,32 @@ const staffLogin = async (req, res) => {
 
     return res.status(200).json({
       message: "Login Successful",
-      data: { role: user.role, token },
+      data: { role: verified.role, token },
     });
   } catch (error) {
     res
       .status(500)
       .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+const verifyStaffToken = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    if (!token) return res.status(400).json({ message: "Token is required" });
+    const jwtVerify = await jwt.verify(token, process.env.jwtSecretKey);
+    if (!jwtVerify)
+      return res
+        .status(400)
+        .json({ status: "invalid", message: "Invalid Token" });
+
+    const find = await staffModel
+      .findOne({ email: jwtVerify.email })
+      .select("-password");
+    res.status(200).json({ message: "Token is valid", data: find });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(400).json({ message: "Token verification failed" });
   }
 };
 
@@ -192,4 +214,5 @@ module.exports = {
   approveUser,
   getAllStaff,
   staffLogin,
+  verifyStaffToken,
 };

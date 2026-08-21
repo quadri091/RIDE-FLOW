@@ -33,7 +33,7 @@ const suspendedSchema = new mongoose.Schema({
 
   suspendedUntil: {
     type: Date,
-    required: true, // suspensions should always have an end date, unlike bans
+    required: true,
   },
 });
 

@@ -6,12 +6,12 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { uploadImage } = require("../utils/uploader.js");
 const generateOTP = require("otp-generator");
+const { getSocketsByUserId } = require("../socket.js");
 const {
-  lifeUpdate,
-  getSocketsByUserId,
-  getSocketsByRole,
-} = require("../socket.js");
-const { changeEmail, changePassword } = require("../utils/send-to-email.js");
+  changeEmail,
+  changePassword,
+  sendNumberCode,
+} = require("../utils/send-to-email.js");
 // otp
 const generate = async () => {
   const code = generateOTP.generate(6, {
@@ -446,8 +446,25 @@ const updateNumber = async (req, res) => {
       },
       { new: true },
     );
+    const send = await sendNumberCode(
+      req.user.email,
+      find.number,
+      find.userName,
+      code,
+    );
+    if (!find || !send) {
+      return res.status(400).json({
+        message: "Failed Due To Unknown Error",
+        status: "retry",
+      });
+    }
+    return res
+      .status(200)
+      .json({ message: "Enter The Code Sent To Your Mail" });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 };
 
@@ -494,6 +511,24 @@ const confirmUpdateNumber = async (req, res) => {
   }
 };
 
+const updateTimeOuts = async (req, res) => {
+  const { assign, accept } = req.body;
+  if (!assign || !accept) {
+    return res.status(400).json({ message: "Fields are empty" });
+  }
+  try {
+    const find = await usermodel.findById(req.user.id);
+    if (!find) {
+      return res.status(400).json({ message: "Unathorized User" });
+    }
+    return res.status(200).json({ message: "Update Successful" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
 module.exports = {
   getResetCode,
   updateLocation,
@@ -509,4 +544,5 @@ module.exports = {
   getAllActiveDrivers,
   updateNumber,
   confirmUpdateNumber,
+  updateTimeOuts,
 };

@@ -7,6 +7,7 @@ const {
   approveUser,
   getAllStaff,
   staffLogin,
+  verifyStaffToken,
 } = require("../controller/staff.js");
 const roleMiddleware = require("../middleware/role.js");
 staffRouter.get(
@@ -15,7 +16,7 @@ staffRouter.get(
   roleMiddleware("admin", "superadmin"),
   getAllStaff,
 );
-staffRouter.post("/create-admin", authMiddleWare, createAdmin);
+staffRouter.post("/create-admin", createAdmin);
 staffRouter.post(
   "/approve-user/:id",
   authMiddleWare,
@@ -29,5 +30,5 @@ staffRouter.delete(
   denyUser,
 );
 staffRouter.post("/login", staffLogin);
-
+staffRouter.post("/verify-staff-token", verifyStaffToken);
 module.exports = staffRouter;

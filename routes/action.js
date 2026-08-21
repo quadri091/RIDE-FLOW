@@ -13,10 +13,12 @@ const {
   getAllActiveDrivers,
   updateNumber,
   confirmUpdateNumber,
+  updateTimeOuts,
 } = require("../controller/action");
 const express = require("express");
-const authMiddleWare = require("../middleware/auth.js");
 const actionRouter = express.Router();
+const authMiddleWare = require("../middleware/auth.js");
+const roleMiddleware = require("../middleware/role.js");
 
 actionRouter.post("/get-reset-code", authMiddleWare, getResetCode);
 actionRouter.post("/verify-reset-password", authMiddleWare, confirmPasswordOTP);
@@ -40,5 +42,10 @@ actionRouter.post(
   authMiddleWare,
   confirmUpdateNumber,
 );
-
+(actionRouter.post(
+  "/update-time-out",
+  authMiddleWare,
+  roleMiddleware("driver"),
+),
+  updateTimeOuts);
 module.exports = actionRouter;

@@ -102,16 +102,18 @@ const unsuspendUser = async (req, res) => {
       "user.id": userId,
     });
 
-    await usermodel.findByIdAndUpdate(
-      userId,
-      { $set: { suspended: false } },
-      { new: true },
-    );
     if (!suspension) {
       return res
         .status(404)
         .json({ message: "No active suspension found for this user" });
     }
+
+    await usermodel.findByIdAndUpdate(
+      userId,
+      { $set: { suspended: false } },
+      { new: true },
+    );
+
     const io = req.app.get("io");
 
     await broadCastSuspended(

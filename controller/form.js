@@ -3,6 +3,7 @@ const bannedModel = require("../model/banned.js");
 const suspendedModel = require("../model/suspended.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const formatTimestamp = require("../utils/format.js");
 const cloudinary = require("../utils/claudinary.js");
 const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client(
@@ -53,6 +54,17 @@ const login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid password" });
+    }
+    if (user.suspended) {
+      const find = await suspendedModel.findOne({ "user.id": user.id });
+      const time = formatTimestamp(find.suspendedUntil);
+      return res.status(403).json({
+        message: `User has been suspended till ${time}`,
+      });
+    }
+
+    if (user.banned) {
+      return res.status(403).json({ message: `User has been banned` });
     }
 
     const token = await jwt.sign(
@@ -236,33 +248,6 @@ const verifyOTP = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
-const updateNumber = async (req, res) => {
-  const { email, number } = req.body;
-  if (!email || !number) {
-    return res.status(400).json({ message: "Email and number are required" });
-  }
-  try {
-    const user = await usermodel.findOneAndUpdate(
-      { email },
-      { $set: { number } },
-      { new: true },
-    );
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    const io = req.app.get("io");
-    io.to("admins").emit("new:updated", user);
-    return res.status(200).json({
-      status: "success",
-      message: "Number updated successfully",
-    });
-  } catch (error) {
-    console.log(error);
-    return res
-      .status(500)
-      .json({ message: "Server error", error: error.message });
-  }
-};
 const driverSignup = async (req, res) => {
   console.log(req.body);
   const {
@@ -423,6 +408,18 @@ const verifyGoogleToken = async (req, res) => {
       }
     }
 
+    if (user.suspended) {
+      const find = await suspendedModel.findOne({ "user.id": user.id });
+      const time = formatTimestamp(find.suspendedUntil);
+      return res.status(403).json({
+        message: `User has been suspended till ${time}`,
+      });
+    }
+
+    if (user.banned) {
+      return res.status(403).json({ message: `User has been banned` });
+    }
+
     // 3. At this point user exists (either found or just created)
     const token = jwt.sign({ email, id: user.id }, process.env.jwtSecretKey, {
       expiresIn: 60 * 60,
@@ -453,6 +450,5 @@ module.exports = {
   verifyOTP,
   uploadCarImage,
   verifyToken,
-  updateNumber,
   verifyGoogleToken,
 };

@@ -57,7 +57,7 @@ const userSchema = new mongoose.Schema({
   profileImage: {
     type: String,
     default:
-      "https://i.pinimg.com/736x/7d/5b/9e/7d5b9e5839457ea1124bb3c0952c8a84.jpg",
+      "https://res.cloudinary.com/dwshzqcf2/image/upload/v1787325165/f76lkpo5tr5goszhfrre.png",
   },
   banned: {
     type: Boolean,
@@ -72,8 +72,14 @@ const userSchema = new mongoose.Schema({
     required: function () {
       return this.role === "rider";
     },
-    default: 10,
+    default: function () {
+      if (this.role === "rider") {
+        return 10;
+      }
+      return undefined;
+    },
   },
+
   changeEmail: {
     type: String,
     required: false,
@@ -87,7 +93,12 @@ const userSchema = new mongoose.Schema({
     required: function () {
       return this.role === "rider";
     },
-    default: 10,
+    default: function () {
+      if (this.role === "rider") {
+        return 10;
+      }
+      return undefined;
+    },
   },
 
   //

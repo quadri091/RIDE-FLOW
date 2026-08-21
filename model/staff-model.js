@@ -21,7 +21,17 @@ const staffSchema = new mongoose.Schema({
   token: { type: String },
   otp: { type: Number },
   otpExpiry: { type: Date },
-  profileImage: { type: String, default: "" },
+  profileImage: {
+    type: String,
+    default: function () {
+      if (this.role === "admin") {
+        return "https://res.cloudinary.com/dwshzqcf2/image/upload/v1787324766/bvgynwuljjwam1xcqmt7.png";
+      } else if (this.role === "superadmin") {
+        return "https://res.cloudinary.com/dwshzqcf2/image/upload/v1787324607/jzkdunpwv1xr539fwtx4.png";
+      }
+      return "";
+    },
+  },
 });
 
 const staffModel = mongoose.model("staff", staffSchema);

@@ -7,7 +7,6 @@ const {
   verifyOTP,
   verifyToken,
   uploadCarImage,
-  updateNumber,
   verifyGoogleToken,
   getCode,
 } = require("../controller/form.js");
@@ -19,7 +18,6 @@ formRouter.post("/verify-token", verifyToken);
 formRouter.post("/login", login);
 formRouter.post("/upload", uploadCarImage);
 formRouter.post("/driver-signup", driverSignup);
-formRouter.post("/update-number", updateNumber);
 formRouter.post("/auth/google", verifyGoogleToken);
 
 module.exports = formRouter;
