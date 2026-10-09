@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ride-Flow - OTP Page</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="form.css" />
+  </head>
+  <body>
+    <div class="load">
+      <div id="wifi-loader">
+        <svg class="circle-outer" viewBox="0 0 86 86">
+          <circle class="back" cx="43" cy="43" r="40"></circle>
+          <circle class="front" cx="43" cy="43" r="40"></circle>
+          <circle class="new" cx="43" cy="43" r="40"></circle>
+        </svg>
+        <svg class="circle-middle" viewBox="0 0 60 60">
+          <circle class="back" cx="30" cy="30" r="27"></circle>
+          <circle class="front" cx="30" cy="30" r="27"></circle>
+        </svg>
+        <svg class="circle-inner" viewBox="0 0 34 34">
+          <circle class="back" cx="17" cy="17" r="14"></circle>
+          <circle class="front" cx="17" cy="17" r="14"></circle>
+        </svg>
+      </div>
+    </div>
+    <div class="notifys"></div>
+    <audio src="notification.mp3" id="audio"></audio>
+    <!-- LEFT: visual side -->
+    <div class="visual">
+      <div class="brand">
+        <div class="svg">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="44"
+            height="44"
+            viewBox="0 0 48 48"
+            fill="none"
+            stroke-width="7"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M18 9h10c6 0 10 3.5 10 8.5S34 26 28 26h-6"
+              stroke="#4ff087"
+            />
+            <path d="M7 29c4-4 9-4 14-1" stroke="#2fd06e" />
+            <path d="M18 31l-6 10" stroke="#22b35e" />
+            <path d="M23 31l7 9 10-9" stroke="#2fd06e" />
+          </svg>
+        </div>
+        <h2>RideFlow</h2>
+      </div>
+
+      <div class="bottom">
+        <div class="headline">
+          <h1>
+            Your ride.
+            <span class="accent">Your way.</span>
+            Everyday.
+          </h1>
+          <p>
+            Smart rides, real-time tracking, and safe journeys — all in one app.
+          </p>
+        </div>
+
+        <div class="perks">
+          <div class="perk">
+            <div class="icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#ffffff"
+              >
+                <path
+                  d="m438-338 226-226-57-57-169 169-84-84-57 57 141 141Zm42 258q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Z"
+                />
+              </svg>
+            </div>
+            <div class="perk-text">
+              <h4>Safe & Secure</h4>
+              <p>Verified riders and drivers.</p>
+            </div>
+          </div>
+
+          <div class="perk">
+            <div class="icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#ffffff"
+              >
+                <path
+                  d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 400Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Z"
+                />
+              </svg>
+            </div>
+            <div class="perk-text">
+              <h4>Real-time Tracking</h4>
+              <p>Track your ride in real time.</p>
+            </div>
+          </div>
+
+          <div class="perk">
+            <div class="icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="#ffffff"
+              >
+                <path
+                  d="M120-120v-560h240v-80l120-120 120 120v240h240v400H120Zm80-80h80v-80h-80v80Zm0-160h80v-80h-80v80Zm0-160h80v-80h-80v80Zm240 320h80v-80h-80v80Zm0-160h80v-80h-80v80Zm0-160h80v-80h-80v80Zm0-160h80v-80h-80v80Zm240 480h80v-80h-80v80Zm0-160h80v-80h-80v80Z"
+                />
+              </svg>
+            </div>
+            <div class="perk-text">
+              <h4>Across the City</h4>
+              <p>Rides available wherever you go.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="trust-banner">
+          <div class="trust-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="#ffffff"
+            >
+              <path
+                d="M0-240v-32q0-34 17.5-62.5T64-378q62-31 126-46.5T320-440q66 0 130 15.5T576-378q29 15 46.5 43.5T640-272v32H0Zm720 0v-32q0-44-24.5-84.5T631-424q53 6 99.5 20.5T810-378q31 16 50.5 46t19.5 60v32H720ZM320-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47Zm400-160q0 66-47 113t-113 47q-11 0-28-2.5t-28-5.5q27-32 41.5-71t14.5-81q0-42-14.5-81T504-712q14-5 28-6.5t28-1.5q66 0 113 47t47 113Z"
+              />
+            </svg>
+          </div>
+          <div class="trust-text">
+            <h4>Thousands of riders trust RideFlow</h4>
+            <p>Join a community that moves smarter.</p>
+          </div>
+          <div class="trust-arrow">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="#ffffff"
+            >
+              <path
+                d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: form side -->
+    <div class="formside">
+      <div class="topbar">
+        <a href="index.html" class="home-link">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="22px"
+            viewBox="0 -960 960 960"
+            width="22px"
+            fill="currentColor"
+          >
+            <path d="M160-120v-480l320-240 320 240v480H560v-280H400v280H160Z" />
+          </svg>
+          Home
+        </a>
+      </div>
+
+      <div class="wrap">
+        <div class="card">
+          <div class="card-logo">
+            <div class="svg">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="48"
+                height="48"
+                viewBox="0 0 48 48"
+                fill="none"
+                stroke-width="7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M18 9h10c6 0 10 3.5 10 8.5S34 26 28 26h-6"
+                  stroke="#3fd27c"
+                />
+                <path d="M7 29c4-4 9-4 14-1" stroke="#22b35e" />
+                <path d="M18 31l-6 10" stroke="#1a9e4f" />
+                <path d="M23 31l7 9 10-9" stroke="#22b35e" />
+              </svg>
+            </div>
+            <h2>RideFlow</h2>
+          </div>
+
+          <h1>Verify OTP</h1>
+          <p class="sub">Enter the 6-digit code sent to <b id="email"></b>.</p>
+
+          <form id="otpForm" class="otp-form">
+            <div class="otp-group">
+              <input
+                type="text"
+                class="otp-input"
+                inputmode="numeric"
+                maxlength="1"
+                placeholder="0"
+              />
+              <input
+                type="text"
+                class="otp-input"
+                inputmode="numeric"
+                maxlength="1"
+                placeholder="0"
+              />
+              <input
+                type="text"
+                class="otp-input"
+                inputmode="numeric"
+                maxlength="1"
+                placeholder="0"
+              />
+              <input
+                type="text"
+                class="otp-input"
+                inputmode="numeric"
+                maxlength="1"
+                placeholder="0"
+              />
+              <input
+                type="text"
+                class="otp-input"
+                inputmode="numeric"
+                maxlength="1"
+                placeholder="0"
+              />
+              <input
+                type="text"
+                class="otp-input"
+                inputmode="numeric"
+                maxlength="1"
+                placeholder="0"
+              />
+            </div>
+            <button
+              type="button"
+              class="continue-btn ripple-btn"
+              onclick="confirmOtp()"
+            >
+              Verify OTP
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="22px"
+                viewBox="0 -960 960 960"
+                width="22px"
+              >
+                <path
+                  d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z"
+                />
+              </svg>
+            </button>
+          </form>
+
+          <p class="bottom-text">
+            Didn't get a code? <span onclick="resendEmail()">Resend</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+<script src="config.obf.js"></script>
+<script src="animate.obf.js"></script>
+<script src="otp.obf.js"></script>
