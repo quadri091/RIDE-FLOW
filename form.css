@@ -808,7 +808,7 @@ body {
     width: 100%;
     min-width: 0;
     height: auto;
-    padding: 32px 28px 96px;
+    padding: 32px 28px 132px;
     background-image:
       linear-gradient(
         90deg,
@@ -823,10 +823,12 @@ body {
       ),
       url("side.png");
   }
+  /* stream: stacked bands riding the same S-curve, each a little lower
+     and further along, ending in the white of the form */
   .visual::before {
     bottom: -1px;
-    height: 72px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 58C120 44 250 52 400 6V80H0Z' fill='%231d7a45' fill-opacity='.85'/%3E%3Cpath d='M0 66C130 50 270 66 400 26V80H0Z' fill='%23ffffff'/%3E%3C/svg%3E")
+    height: 124px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 120' preserveAspectRatio='none'%3E%3Cpath d='M0 50C70 16 150 12 215 42S335 82 400 18V120H0Z' fill='%234ff087' fill-opacity='.3'/%3E%3Cpath d='M0 64C75 32 155 28 222 56S342 94 400 34V120H0Z' fill='%232fd06e' fill-opacity='.55'/%3E%3Cpath d='M0 78C80 46 160 44 228 70S348 104 400 50V120H0Z' fill='%231d7a45' fill-opacity='.95'/%3E%3Cpath d='M0 92C85 62 165 60 235 84S352 114 400 66V120H0Z' fill='%23ffffff'/%3E%3C/svg%3E")
       no-repeat bottom / 100% 100%;
   }
   .visual .bottom {
@@ -863,7 +865,10 @@ body {
 }
 @media (max-width: 600px) {
   .visual {
-    padding: 24px 22px 84px;
+    padding: 24px 22px 116px;
+  }
+  .visual::before {
+    height: 108px;
   }
   .visual .brand h2 {
     font-size: 22px;
