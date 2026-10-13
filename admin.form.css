@@ -35,7 +35,7 @@ body {
       #012622 90%
     ),
     linear-gradient(90deg, rgba(2, 30, 28, 0.6) 0%, rgba(2, 30, 28, 0) 65%),
-    url("https://images.pexels.com/photos/6437432/pexels-photo-6437432.jpeg?auto=compress&cs=tinysrgb&w=1600");
+    url("admin.png");
   background-size: cover;
   background-position: center;
   display: flex;
@@ -96,39 +96,47 @@ body {
   max-width: 400px;
 }
 
-/* perks: three in a row with dividers */
+/* perks: three glass cards in a row */
 .perks {
   margin-top: auto;
   padding-top: 28px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
 }
 .perk {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 18px;
-}
-.perk + .perk {
-  border-left: 1px solid rgba(255, 255, 255, 0.18);
-  padding-left: 36px;
+  padding: 22px 20px;
+  border-radius: 22px;
+  background: rgba(4, 28, 22, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 .perk .icon {
-  width: 64px;
-  height: 64px;
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #4cc76f;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.perk span {
+.perk h4 {
+  margin-top: 20px;
   color: #ffffff;
   font-size: 17px;
   font-weight: 700;
+  line-height: 1.3;
+}
+.perk p {
+  margin-top: 8px;
+  color: rgba(226, 236, 230, 0.85);
+  font-size: 15px;
   line-height: 1.45;
-  max-width: 110px;
 }
 
 /* ===== RIGHT : form side ===== */
@@ -711,14 +719,51 @@ body {
     width: 46%;
     padding: 14vh 40px 48px;
   }
-  .perk + .perk {
-    padding-left: 20px;
+  .perks {
+    gap: 12px;
   }
-  .perk span {
+  .perk {
+    padding: 18px 14px;
+    border-radius: 18px;
+  }
+  .perk h4 {
     font-size: 15px;
+  }
+  .perk p {
+    font-size: 13px;
   }
   .wrap {
     padding: 16px 40px 48px;
+  }
+}
+/* short laptop screens: tighten the left side so the cards stay in view */
+@media (max-height: 800px) and (min-width: 901px) {
+  .visual {
+    padding-top: 9vh;
+    padding-bottom: 32px;
+  }
+  .visual .bottom {
+    margin-top: 28px;
+  }
+  .visual .headline p {
+    margin-top: 18px;
+  }
+  .perks {
+    padding-top: 20px;
+  }
+  .perk {
+    padding: 16px;
+  }
+  .perk .icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+  }
+  .perk h4 {
+    margin-top: 14px;
+  }
+  .perk p {
+    margin-top: 6px;
   }
 }
 @media (max-width: 900px) {
@@ -732,16 +777,18 @@ body {
     width: 100%;
     min-width: 0;
     height: auto;
-    padding: 32px 28px 110px;
+    padding: 32px 28px 132px;
   }
+  /* stream: same stacked S-curve bands as the rider/driver forms,
+     ending in the white of the form */
   .visual::before {
     content: "";
     position: absolute;
     left: 0;
     right: 0;
     bottom: -1px;
-    height: 72px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 58C120 44 250 52 400 6V80H0Z' fill='%231d7a45' fill-opacity='.85'/%3E%3Cpath d='M0 66C130 50 270 66 400 26V80H0Z' fill='%23ffffff'/%3E%3C/svg%3E")
+    height: 124px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 120' preserveAspectRatio='none'%3E%3Cpath d='M0 50C70 16 150 12 215 42S335 82 400 18V120H0Z' fill='%234ff087' fill-opacity='.3'/%3E%3Cpath d='M0 64C75 32 155 28 222 56S342 94 400 34V120H0Z' fill='%232fd06e' fill-opacity='.55'/%3E%3Cpath d='M0 78C80 46 160 44 228 70S348 104 400 50V120H0Z' fill='%231d7a45' fill-opacity='.95'/%3E%3Cpath d='M0 92C85 62 165 60 235 84S352 114 400 66V120H0Z' fill='%23ffffff'/%3E%3C/svg%3E")
       no-repeat bottom / 100% 100%;
     pointer-events: none;
   }
@@ -787,7 +834,10 @@ body {
 }
 @media (max-width: 600px) {
   .visual {
-    padding: 24px 22px 92px;
+    padding: 24px 22px 116px;
+  }
+  .visual::before {
+    height: 108px;
   }
   .visual .brand {
     padding: 8px 18px 8px 14px;
@@ -820,7 +870,9 @@ body {
     display: none;
   }
   .formside {
-    background-size: 220px 140px, auto;
+    background-size:
+      220px 140px,
+      auto;
   }
   .wrap {
     padding: 4px 22px 44px;
