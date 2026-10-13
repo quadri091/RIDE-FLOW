@@ -2071,6 +2071,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    /* above map controls (Leaflet's sit at 1000) so nothing covers the back button */
+    z-index: 1001;
     transition: all 0.3s ease-in-out;
   }
 
