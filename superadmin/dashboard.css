@@ -2600,8 +2600,55 @@ body {
   border-color: #0a8f3c;
   background: white;
 }
-.email-modal input[type="datetime-local"] {
-  margin-top: 10px;
+/* date picker in the suspend modal */
+.modal-date {
+  display: block;
+  margin-top: 12px;
+  min-width: 0;
+  text-align: left;
+}
+.modal-date > span:first-child {
+  display: block;
+  margin: 0 0 6px 2px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4b5563;
+}
+.modal-date .date-field {
+  position: relative;
+  display: block;
+}
+/* iOS gives date inputs a built-in minimum width, which overflowed the card */
+.email-modal .modal-date input {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  line-height: 46px;
+  text-align: left;
+  color: #111;
+}
+.modal-date input::-webkit-date-and-time-value {
+  text-align: left;
+}
+/* empty date inputs show nothing on phones, so show a hint until one is picked */
+.modal-date .date-hint {
+  display: none;
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
+  color: #9c9b9b;
+  pointer-events: none;
+}
+.modal-date input:not(.filled):not(:focus) {
+  color: transparent;
+}
+.modal-date input:not(.filled):not(:focus) + .date-hint {
+  display: block;
 }
 .disp-each .actions {
   gap: 10px;

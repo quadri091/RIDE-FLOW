@@ -11,6 +11,7 @@
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js"></script>
     <title>Admin - Dashboard</title>
     <link rel="stylesheet" href="dashboard.css" />
+    <link rel="shortcut icon" href="../favicon.png" type="image/x-icon" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -39,7 +40,18 @@
         <p id="modalText"></p>
 
         <textarea id="modalReason"></textarea>
-        <input type="datetime-local" id="modalDate" />
+        <label class="modal-date" id="modalDateWrap">
+          <span>Suspend until</span>
+          <span class="date-field">
+            <input
+              type="datetime-local"
+              id="modalDate"
+              oninput="this.classList.toggle('filled', !!this.value)"
+              onchange="this.classList.toggle('filled', !!this.value)"
+            />
+            <span class="date-hint">Tap to pick date &amp; time</span>
+          </span>
+        </label>
 
         <div class="email-modal-buttons">
           <button class="email-cancel" onclick="closeModal()">Cancel</button>
