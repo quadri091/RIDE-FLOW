@@ -1,16 +1,9 @@
-/* ==========================================================================
-   RIDE-FLOW — RESPONSIVENESS ONLY
-   Add this file AFTER index.css (does not replace it)
-   <link rel="stylesheet" href="responsive.css" />
-   ========================================================================== */
-
-/* ---------- Global safety net ---------- */
 * {
   max-width: 100%;
 }
 html,
 body {
-  overflow-x: hidden;
+  overflow-x: clip;
   width: 100%;
 }
 img,
@@ -19,9 +12,6 @@ svg {
   height: auto;
 }
 
-/* ==========================================================================
-   TABLET / SMALL LAPTOP  ≤1100px
-   ========================================================================== */
 @media (max-width: 1100px) {
   nav {
     padding: 15px 40px;
@@ -46,6 +36,9 @@ svg {
   .hero .right {
     max-width: 500px;
     margin: 0 auto;
+  }
+  .hero-road {
+    display: none;
   }
 
   .recent {
@@ -113,9 +106,6 @@ svg {
   }
 }
 
-/* ==========================================================================
-   TABLET PORTRAIT  ≤850px
-   ========================================================================== */
 @media (max-width: 850px) {
   body {
     zoom: 1;
@@ -252,9 +242,6 @@ svg {
   }
 }
 
-/* ==========================================================================
-   MOBILE  ≤600px
-   ========================================================================== */
 @media (max-width: 600px) {
   nav {
     padding: 12px 16px;
@@ -264,7 +251,7 @@ svg {
   }
   nav .second {
     display: none;
-  } /* nav links hidden on mobile — no JS menu present in current markup */
+  }
   nav .third {
     width: 100%;
     justify-content: center;
@@ -442,9 +429,6 @@ svg {
   }
 }
 
-/* ==========================================================================
-   SMALL MOBILE  ≤380px
-   ========================================================================== */
 @media (max-width: 380px) {
   .hero .left .text h1 {
     font-size: 26px;

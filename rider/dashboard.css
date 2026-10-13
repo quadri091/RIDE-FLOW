@@ -2087,7 +2087,8 @@ body {
     border-radius: 25px;
     overflow: hidden;
   }
-  button {
+  /* direct children only, so the map's own buttons keep their look */
+  > button {
     cursor: pointer;
     overflow: hidden;
     padding: 15px 35px;
@@ -2103,7 +2104,7 @@ body {
     justify-content: center;
     transition: all 0.3s ease-in-out;
   }
-  button:hover {
+  > button:hover {
     box-shadow: 0px 0px 20px #0a8f3c;
   }
 }
@@ -4436,4 +4437,196 @@ body {
 .email-modal-buttons button:disabled {
   opacity: 0.5;
   cursor: progress;
+}
+
+/* ───────── LIVE TRIP MAP — same layout as the driver's ───────── */
+@media (min-width: 901px) {
+  .drawer .in.live {
+    width: min(88vw, 1300px);
+    height: 86vh;
+    height: 86dvh;
+  }
+}
+.drawer .map-card {
+  position: absolute;
+  top: calc(7vh + 18px);
+  top: calc(7dvh + 18px);
+  left: calc((100vw - min(88vw, 1300px)) / 2 + 18px);
+  z-index: 2;
+  width: 330px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid #ebebea;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+.drawer .map-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.drawer .map-card .match-code {
+  font-family: "Courier New", monospace;
+  font-weight: bold;
+  color: #000;
+  background: #f4f4f3;
+  border: 1px solid #d5d5d5;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+.drawer .map-card .pill {
+  font-weight: bold;
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  width: fit-content;
+  display: inline-block;
+  white-space: nowrap;
+  background: #e7f4e9;
+  color: #0a8f3c;
+  border: 1px solid #bfe3c6;
+}
+.drawer .map-card .pill.amber {
+  background: #fff6e0;
+  color: #b8860b;
+  border-color: #f0dfa8;
+}
+.drawer .map-card .pill.red {
+  background: #fdeaea;
+  color: #d14343;
+  border-color: #f3c2c2;
+}
+.drawer .map-card .pill.blue {
+  background: #eef1fd;
+  color: #4a5fd1;
+  border-color: #cdd5f7;
+}
+.drawer .map-card .pill.grey {
+  background: #f4f4f3;
+  color: #6b7280;
+  border-color: #d5d5d5;
+}
+.drawer .map-leg {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #1a1a1a;
+}
+.drawer .map-leg span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.drawer .map-leg i {
+  width: 10px;
+  height: 10px;
+  min-width: 10px;
+  border-radius: 50%;
+}
+.drawer .map-leg .leg-p {
+  background: #0a8f3c;
+}
+.drawer .map-leg .leg-d {
+  background: #000;
+}
+.drawer .map-card .chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 8px;
+}
+.drawer .map-card .chip {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #f4f4f3;
+  border: 1px solid #ebebea;
+  font-size: 12px;
+  font-weight: 700;
+  color: #6b6b6b;
+}
+.drawer .map-card .btn {
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  border-radius: 25px;
+  padding: 8px 14px;
+  font-weight: bold;
+  font-size: 12px;
+  background: #0a8f3c;
+  border: 1px solid #0a8f3c;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.3s ease-in-out;
+}
+.drawer .map-card .btn:hover {
+  box-shadow: 0 0 20px #0a8f3c;
+}
+.drawer #recenterLive {
+  right: calc((100vw - min(88vw, 1300px)) / 2 + 18px);
+  bottom: calc(7vh + 18px);
+  bottom: calc(7dvh + 18px);
+  z-index: 2;
+  font-size: 14px;
+}
+.pin {
+  width: 30px;
+  height: 30px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #fff;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+.pin span {
+  transform: rotate(45deg);
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+}
+.pin.pickup {
+  background: #0a8f3c;
+}
+.pin.dropoff {
+  background: #000;
+}
+@media (max-width: 900px) {
+  .drawer .map-card {
+    top: auto;
+    bottom: calc(11vh + 12px);
+    bottom: calc(11dvh + 12px);
+    left: 24px;
+    right: 24px;
+    width: auto;
+  }
+  .drawer #recenterLive {
+    top: calc(11vh + 12px);
+    top: calc(11dvh + 12px);
+    bottom: auto;
+    right: 24px;
+    padding: 14px;
+  }
+}
+@media (max-width: 600px) {
+  .drawer .map-card {
+    bottom: calc(9vh + 10px);
+    bottom: calc(9dvh + 10px);
+    left: 18px;
+    right: 18px;
+    padding: 14px;
+  }
+  .drawer #recenterLive {
+    top: calc(9vh + 10px);
+    top: calc(9dvh + 10px);
+    right: 18px;
+  }
 }

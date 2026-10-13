@@ -54,7 +54,40 @@
     </nav>
 
     <!--  -->
-    <div class="hero">
+    <div class="hero play">
+      <!-- a road winding behind the hero, with a car driving it -->
+      <svg
+        class="hero-road"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 1440 560"
+        preserveAspectRatio="xMidYMax slice"
+        aria-hidden="true"
+      >
+        <defs>
+          <path
+            id="heroRoad"
+            d="M-60 540C160 498 330 552 520 522S790 478 870 392 930 196 1060 128 1360 30 1520-20"
+          />
+        </defs>
+        <use href="#heroRoad" class="road" />
+        <use href="#heroRoad" class="lane" />
+        <g class="pin" transform="translate(96 520)">
+          <circle class="pin-ring" r="9" />
+          <path d="M0 0C-3-5-10-11-10-18a10 10 0 0 1 20 0C10-11 3-5 0 0Z" />
+          <circle cy="-18" r="3.6" fill="#ffffff" />
+        </g>
+        <g class="car">
+          <ellipse rx="22" ry="12" class="car-shadow" />
+          <rect x="-17" y="-9" width="34" height="18" rx="6" fill="#0a8f3c" />
+          <rect x="2" y="-7" width="8" height="14" rx="2" fill="#c8f2d6" />
+          <rect x="-13" y="-7" width="6" height="14" rx="2" fill="#c8f2d6" opacity=".75" />
+          <circle cx="16" cy="-5.5" r="1.7" fill="#fff6b8" />
+          <circle cx="16" cy="5.5" r="1.7" fill="#fff6b8" />
+          <animateMotion dur="11s" repeatCount="indefinite" rotate="auto">
+            <mpath href="#heroRoad" />
+          </animateMotion>
+        </g>
+      </svg>
       <div class="left">
         <span class="span">⚡ The #1 Ride-Hailing Platform</span>
         <div class="text">
@@ -111,7 +144,7 @@
         </div>
         <span class="head">Live trip preview</span>
         <!--  -->
-        <div class="trip">
+        <div class="trip pick">
           <div class="icon"></div>
           <div class="cont">
             <p>Pickup</p>
