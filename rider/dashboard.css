@@ -2709,8 +2709,6 @@ body {
 }
 
 /* ---------- grid ---------- */
-/* fixed-width columns, centred as a block: extra cards line up under
-   the first column instead of floating in the middle of the last row */
 .driver-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, 300px);

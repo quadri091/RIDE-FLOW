@@ -2601,7 +2601,6 @@ body {
   border-color: #0a8f3c;
   background: white;
 }
-/* date picker in the suspend modal */
 .modal-date {
   display: block;
   margin-top: 12px;
@@ -2619,7 +2618,6 @@ body {
   position: relative;
   display: block;
 }
-/* iOS gives date inputs a built-in minimum width, which overflowed the card */
 .email-modal .modal-date input {
   -webkit-appearance: none;
   appearance: none;
@@ -2634,7 +2632,6 @@ body {
 .modal-date input::-webkit-date-and-time-value {
   text-align: left;
 }
-/* empty date inputs show nothing on phones, so show a hint until one is picked */
 .modal-date .date-hint {
   display: none;
   position: absolute;

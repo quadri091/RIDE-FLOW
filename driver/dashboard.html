@@ -66,7 +66,7 @@
     <div
       class="loc-sheet"
       id="locSheet"
-      onclick="if (event.target == this) closeLocationSheet(false)"
+      onclick="if (event.target == this) closeLocationSheet()"
     >
       <div
         class="loc-card"
@@ -88,12 +88,12 @@
           <button
             class="loc-primary"
             id="locPrimary"
-            onclick="rippleEffect(event); closeLocationSheet(true)"
+            onclick="rippleEffect(event); locationButton()"
           ></button>
           <button
             class="loc-secondary"
             id="locSecondary"
-            onclick="closeLocationSheet(false)"
+            onclick="closeLocationSheet()"
           ></button>
         </div>
       </div>
