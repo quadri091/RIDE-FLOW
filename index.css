@@ -109,6 +109,7 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 48px;
   .left {
     display: flex;
     width: 49%;
@@ -126,18 +127,22 @@ nav {
     .text {
       display: flex;
       flex-direction: column;
+      container-type: inline-size;
       h1 {
         font-size: 60px;
+        font-size: min(60px, calc((100cqi - 13px) / 8.3));
         width: 100%;
-        line-height: 67px;
+        line-height: 1.12;
         color: black;
       }
       .p {
         color: transparent;
         font-size: 60px;
+        font-size: min(60px, calc((100cqi - 13px) / 8.3));
         font-weight: bold;
-        line-height: 67px;
-        height: 70px;
+        line-height: 1.12;
+        height: 1.17em;
+        white-space: nowrap;
         background: linear-gradient(to right, #0a8f3c, #22b35e);
         background-clip: text;
       }
@@ -152,6 +157,7 @@ nav {
       }
       .type {
         height: 60px;
+        height: min(60px, calc((100cqi - 13px) / 8.3));
         background: linear-gradient(to right, #0a8f3c, #22b35e);
         width: 3px;
         border-radius: 10px;
@@ -368,9 +374,6 @@ nav {
   }
 }
 
-/* hero motion: each piece arrives from its own direction, the trip card builds
-   up row by row, and a car drives the road behind it all. index.js toggles
-   .play so it replays whenever the hero comes back into view */
 .hero {
   position: relative;
   overflow-x: clip;
@@ -488,7 +491,6 @@ nav {
   }
 }
 
-/* left side, one piece after another */
 .hero.play .left .span,
 .hero.play .left .text h1,
 .hero.play .left .text .cont,
@@ -524,7 +526,6 @@ nav {
   animation-delay: 0.84s;
 }
 
-/* trip card: rises in, then its rows build up */
 .hero.play .right {
   --from-y: 50px;
   animation: hero-in 1s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
@@ -566,7 +567,6 @@ nav {
     float-bob 3.4s ease-in-out 2.3s infinite;
 }
 
-/* live bits of the card: pickup pulses, the route flows to the drop-off */
 .hero .right .trip.pick {
   position: relative;
 }
@@ -619,9 +619,10 @@ nav {
 
 /* recent */
 .recent {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 250px));
   justify-content: space-between;
+  gap: 24px;
   padding: 45px 165px;
   border-bottom: 1px solid #ebebea;
   background-size: 51px 51px;
@@ -634,7 +635,6 @@ nav {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
 
     padding: 20px;
-    width: 250px;
     align-items: center;
     gap: 12px;
     h1 {

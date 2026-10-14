@@ -12,6 +12,23 @@ svg {
   height: auto;
 }
 
+@media (max-width: 1300px) {
+  nav {
+    padding: 15px 60px;
+  }
+  .hero {
+    padding: 0 60px;
+  }
+  .recent {
+    padding: 45px 60px;
+  }
+  footer .footer-top,
+  footer .footer-bottom {
+    padding-left: 60px;
+    padding-right: 60px;
+  }
+}
+
 @media (max-width: 1100px) {
   nav {
     padding: 15px 40px;
@@ -43,7 +60,6 @@ svg {
 
   .recent {
     padding: 40px;
-    flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
   }
@@ -136,15 +152,18 @@ svg {
   }
   .hero .left .text h1 {
     font-size: 40px;
-    line-height: 46px;
+    font-size: min(40px, calc((100cqi - 13px) / 8.3));
+    line-height: 1.15;
   }
   .hero .left .text .p {
     font-size: 40px;
-    line-height: 46px;
-    height: 50px;
+    font-size: min(40px, calc((100cqi - 13px) / 8.3));
+    line-height: 1.15;
+    height: 1.25em;
   }
   .hero .left .text .type {
     height: 40px;
+    height: min(40px, calc((100cqi - 13px) / 8.3));
   }
   .hero .left p {
     font-size: 16px;
@@ -157,9 +176,7 @@ svg {
 
   .recent {
     padding: 30px 20px;
-  }
-  .recent .cont {
-    width: 47%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .how-it,
@@ -273,15 +290,18 @@ svg {
   }
   .hero .left .text h1 {
     font-size: 30px;
-    line-height: 36px;
+    font-size: min(30px, calc((100cqi - 13px) / 8.3));
+    line-height: 1.2;
   }
   .hero .left .text .p {
     font-size: 30px;
-    line-height: 36px;
-    height: 38px;
+    font-size: min(30px, calc((100cqi - 13px) / 8.3));
+    line-height: 1.2;
+    height: 1.27em;
   }
   .hero .left .text .type {
     height: 28px;
+    height: min(28px, calc((100cqi - 13px) / 8.3));
   }
   .hero .left p {
     font-size: 15px;
@@ -316,9 +336,7 @@ svg {
   .recent {
     padding: 24px 16px;
     gap: 14px;
-  }
-  .recent .cont {
-    width: 100%;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .how-it,
