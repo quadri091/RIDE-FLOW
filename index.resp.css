@@ -467,3 +467,65 @@ svg {
     flex-direction: column;
   }
 }
+
+@media (max-width: 1300px) {
+  .track-body,
+  .contact-body {
+    padding: 0 60px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .track-body,
+  .contact-body {
+    flex-direction: column;
+    align-items: center;
+    padding: 0 40px;
+  }
+  .track-points {
+    max-width: 500px;
+  }
+  .contact-cards,
+  .contact-form {
+    width: 100%;
+    max-width: 560px;
+  }
+}
+
+@media (max-width: 850px) {
+  .faq-list {
+    width: 100%;
+    padding: 0 20px;
+  }
+  .track-card {
+    width: 100%;
+    max-width: 500px;
+  }
+}
+
+@media (max-width: 600px) {
+  .track-body,
+  .contact-body {
+    padding: 0 16px;
+    gap: 30px;
+  }
+  .faq-list {
+    padding: 0 16px;
+  }
+  .faq-item {
+    padding: 16px 18px;
+  }
+  .faq-question h4 {
+    font-size: 15px;
+  }
+  .track-card,
+  .contact-form {
+    padding: 20px 18px;
+  }
+  .contact-cards {
+    gap: 14px;
+  }
+  .contact-card {
+    padding: 18px;
+  }
+}

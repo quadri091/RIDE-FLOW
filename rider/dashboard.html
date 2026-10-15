@@ -8,7 +8,10 @@
       name="google-site-verification"
       content="Hb7V-I51w6FQKdhLnLT9WFo_2TDnt5kYHEoQr-vazBo"
     />
-    <meta name="description" content="Ride-Flow is a streamlined transit management platform built to optimize your daily commuting routines, track schedules, and coordinate rides seamlessly." />
+    <meta
+      name="description"
+      content="Ride-Flow is a streamlined transit management platform built to optimize your daily commuting routines, track schedules, and coordinate rides seamlessly."
+    />
     <link
       href="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css"
       rel="stylesheet"
@@ -168,6 +171,41 @@
         </button>
       </div>
     </div>
+    <div class="email-modal-overlay" id="supportModal">
+      <div class="email-modal">
+        <div class="email-modal-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="25px"
+            viewBox="0 -960 960 960"
+            width="25px"
+            fill="#0a8f3c"
+          >
+            <path
+              d="M240-400h320v-80H240v80Zm0-120h480v-80H240v80Zm0-120h480v-80H240v80ZM80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Zm126-240h594v-480H160v525l46-45Zm-46 0v-480 480Z"
+            />
+          </svg>
+        </div>
+
+        <h3>Contact Support</h3>
+
+        <p>Tell us what's wrong and our team will reply to your email.</p>
+
+        <textarea
+          id="supportText"
+          maxlength="1500"
+          placeholder="How can we help you?"
+        ></textarea>
+
+        <div class="email-modal-buttons">
+          <button class="email-cancel" onclick="closeSupport()">Cancel</button>
+          <button class="email-confirm" onclick="sendSupport(this)">
+            Send
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div class="drawer"></div>
     <div class="driverUis"></div>
     <div class="load">
@@ -330,6 +368,14 @@
       <div class="detail">
         <h5 class="namet"></h5>
         <p><span id="number"></span> • <span class="role"></span></p>
+        <button
+          onclick="
+            rippleEffect(event);
+            openSupport();
+          "
+        >
+          Contact Support
+        </button>
         <button
           onclick="
             rippleEffect(event);
