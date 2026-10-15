@@ -1624,9 +1624,10 @@ footer {
 }
 .contact-cards {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 20px;
-  width: 520px;
+  width: 100%;
+  max-width: 1110px;
 }
 .contact-card {
   background: white;
@@ -1647,89 +1648,12 @@ footer {
   p {
     font-size: 14px;
     color: #838380;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
   }
 }
 .contact-card:hover {
   transform: translateY(-5px);
   border-color: #0a8f3cae;
-}
-.contact-card.wide {
-  grid-column: 1 / -1;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 15px;
-  h4 {
-    margin-top: 0;
-    margin-bottom: 4px;
-  }
-}
-.contact-form {
-  width: 440px;
-  background: white;
-  border: 1px solid #ebebea;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
-  padding: 25px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  h3 {
-    font-size: 21px;
-  }
-  label {
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-    font-size: 14px;
-    font-weight: 600;
-  }
-  input,
-  select,
-  textarea {
-    width: 100%;
-    border: 1px solid #dadada;
-    border-radius: 12px;
-    padding: 12px 14px;
-    font-size: 15px;
-    background: #f7f7f6;
-    outline: none;
-    font-family: inherit;
-  }
-  input:focus,
-  select:focus,
-  textarea:focus {
-    border-color: #0a8f3c;
-    background: white;
-  }
-  textarea {
-    height: 110px;
-    resize: none;
-  }
-  .contact-send {
-    padding: 13px 18px;
-    border: none;
-    border-radius: 15px;
-    background: #0a8f3c;
-    color: white;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  .contact-send:hover {
-    box-shadow: 0 8px 20px rgba(10, 143, 60, 0.35);
-  }
-  .contact-send:disabled {
-    opacity: 0.6;
-    cursor: progress;
-  }
-}
-.contact-error {
-  color: #e04b4b;
-  font-size: 13px;
-  min-height: 16px;
 }
 .track-map {
   position: relative;
@@ -1787,86 +1711,4 @@ footer {
   right: 10px;
   bottom: 10px;
   color: black;
-}
-.role-field {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  font-size: 14px;
-  font-weight: 600;
-}
-.role-select {
-  position: relative;
-}
-.role-button {
-  width: 100%;
-  padding: 12px 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: 1px solid #dadada;
-  border-radius: 12px;
-  background: #f7f7f6;
-  font-size: 15px;
-  font-family: inherit;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.role-button:hover,
-.role-select.open .role-button {
-  border-color: #0a8f3c;
-  background: white;
-}
-.role-select.open .role-button svg {
-  transform: rotate(180deg);
-}
-.role-drop {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  margin-top: 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 4px;
-  border-radius: 12px;
-  border: 1px solid #f5f6f5;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow:
-    0 0 40px rgba(0, 0, 0, 0.07),
-    0 0 80px rgba(0, 0, 0, 0.07);
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(15px);
-  transition: all 0.2s ease;
-  z-index: 3;
-}
-.role-select.open .role-drop {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-}
-.role-option {
-  padding: 13px 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: none;
-  border-radius: 9px;
-  background: transparent;
-  font-size: 15px;
-  font-family: inherit;
-  cursor: pointer;
-  svg {
-    transform: rotate(-90deg);
-  }
-}
-.role-option:hover {
-  background: #f5f6f5;
-}
-.role-option * {
-  pointer-events: none;
 }
